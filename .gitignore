@@ -1,0 +1,97 @@
+# ============================================================
+#  C++17 / CMake 项目 .gitignore
+#  cmd-file-toolkit
+# ============================================================
+
+# -------------------- CMake 构建产物 --------------------
+build/
+cmake-build-*/
+CMakeUserPresets.json
+
+# -------------------- 编译中间文件 --------------------
+*.o
+*.obj
+*.a
+*.lib
+*.so
+*.dll
+*.dylib
+*.exe
+*.out
+*.app
+
+# -------------------- IDE / 编辑器 --------------------
+# Visual Studio
+.vs/
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
+*.sln
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+x64/
+Win32/
+Debug/
+Release/
+
+# Visual Studio Code
+.vscode/
+
+# CLion / JetBrains
+.idea/
+*.iws
+*.iml
+*.ipr
+
+# 其他编辑器
+*.swp
+*.swo
+*~
+\#*\#
+.#*
+
+# -------------------- 操作系统杂项 --------------------
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Linux
+*~
+
+# -------------------- 测试产物 --------------------
+Testing/
+CTestTestfile.cmake
+coverage/
+*.gcda
+*.gcno
+*.gcov
+
+# -------------------- 包管理 / 依赖 --------------------
+vcpkg_installed/
+conan/
+*.deb
+*.rpm
+
+# -------------------- 运行时 / 日志 --------------------
+*.log
+core
+core.*
+
+# -------------------- 其他 --------------------
+# 第三方库（若采用源码集成而非 git submodule，可取消注释）
+# thirdparty/
+
+# 临时 / 缓存
+*.cache
+*.tmp
+*.temp

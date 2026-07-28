@@ -1,0 +1,75 @@
+{
+  "version": 3,
+  "configurePresets": [
+    {
+      "name": "default-debug",
+      "displayName": "Debug (GCC/Clang)",
+      "description": "Debug build with tests, no ASAN",
+      "generator": "Unix Makefiles",
+      "binaryDir": "${sourceDir}/build/debug",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "BUILD_TESTS": "ON",
+        "ENABLE_ASAN": "OFF",
+        "ENABLE_CLANG_TIDY": "OFF"
+      }
+    },
+    {
+      "name": "default-release",
+      "displayName": "Release (GCC/Clang)",
+      "description": "Release build, no tests",
+      "generator": "Unix Makefiles",
+      "binaryDir": "${sourceDir}/build/release",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "BUILD_TESTS": "OFF",
+        "ENABLE_ASAN": "OFF",
+        "ENABLE_CLANG_TIDY": "OFF"
+      }
+    },
+    {
+      "name": "win-debug",
+      "displayName": "Debug (MSVC)",
+      "description": "Windows Debug build with tests",
+      "generator": "Visual Studio 17 2022",
+      "binaryDir": "${sourceDir}/build/debug",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "BUILD_TESTS": "ON",
+        "ENABLE_ASAN": "OFF",
+        "ENABLE_CLANG_TIDY": "OFF"
+      }
+    },
+    {
+      "name": "win-release",
+      "displayName": "Release (MSVC)",
+      "description": "Windows Release build",
+      "generator": "Visual Studio 17 2022",
+      "binaryDir": "${sourceDir}/build/release",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "BUILD_TESTS": "OFF",
+        "ENABLE_ASAN": "OFF",
+        "ENABLE_CLANG_TIDY": "OFF"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "debug",
+      "configurePreset": "default-debug"
+    },
+    {
+      "name": "release",
+      "configurePreset": "default-release"
+    },
+    {
+      "name": "win-debug",
+      "configurePreset": "win-debug"
+    },
+    {
+      "name": "win-release",
+      "configurePreset": "win-release"
+    }
+  ]
+}
