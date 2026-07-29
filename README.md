@@ -149,9 +149,9 @@ cmake --build build/debug
 ```
 Windows
 ```cmd
-cmake --preset win-debug
-cmake --build build/debug
-build\debug\cmd-file-toolkit.exe --help
+cmake --preset dev-debug
+cmake --build build/dev-debug
+build\dev-debug\cmd-file-toolkit.exe --help
 ```
 
 > 配套提供 `CMakePresets.json` 统一管理所有编译配置，避免手写复杂参数。
