@@ -8,8 +8,3 @@ project(cmd-file-toolkit
         DESCRIPTION "Enterprise C++17 CLI file batch processing toolkit"
         LANGUAGES CXX
 )
-
-# -------------------- 全局选项 --------------------
-option(BUILD_TESTS  "Build unit tests (requires GoogleTest)"  ON)
-option(ENABLE_ASAN  "Enable AddressSanitizer (Debug only)"     OFF)
-option(ENABLE_CLANG_TIDY "Enable clang-tidy static analysis"   OFF)
