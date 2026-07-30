@@ -72,9 +72,6 @@ cmd-file-toolkit/
 │   └── md5/
 ├── src/                    # 业务源码，核心模块
 │   ├── main.cpp            # 程序入口，命令行分发
-│   ├── cli/                # 命令行解析、参数定义
-│   │   ├── cli_parser.h
-│   │   └── cli_parser.cpp
 │   ├── fs/                 # 文件系统基础封装
 │   │   ├── file_scanner.h   # 目录遍历、文件过滤
 │   │   └── file_scanner.cpp
@@ -99,8 +96,8 @@ cmd-file-toolkit/
 │   └── test_md5.cpp
 ├── assets/                 # 资源（测试用样本文件、模板）
 ├── build/                  # 编译输出目录（gitignore）
-│   ├── debug/
-│   └── release/
+│   ├── dev-debug/
+│   └── prod-release/
 ├── scripts/                # 辅助脚本：编译、格式化、运行测试
 │   ├── build.sh
 │   └── build.bat
@@ -139,20 +136,6 @@ cmd-file-toolkit/
 5. 自动引入 thirdparty header-only 库
 6. 封装单元测试目标（使用 GoogleTest）
 7. 区分目标：主程序 `cmd-file-toolkit` + `unit_test` 测试程序
-
-### 快速编译命令示例
-Linux/macOS
-```bash
-cmake --preset default-debug
-cmake --build build/debug
-./build/debug/cmd-file-toolkit --help
-```
-Windows
-```cmd
-cmake --preset dev-debug
-cmake --build build/dev-debug
-build\dev-debug\cmd-file-toolkit.exe --help
-```
 
 > 配套提供 `CMakePresets.json` 统一管理所有编译配置，避免手写复杂参数。
 
@@ -194,54 +177,6 @@ docs: 更新README工程结构
 ---
 
 ## 五、测试方案
-### 测试分层
-1. **单元测试（GoogleTest）**
-   存放路径：`tests/`
-   覆盖模块：字符串工具、路径解析、MD5计算、文件名处理
-   不依赖真实大量文件，使用内存模拟 + 临时测试文件
-
-2. **集成手动测试**
-   使用 assets 下测试目录，验证完整命令行流程：
-   ```bash
-   # 查找重复文件
-   cmd-file-toolkit dup --dir ./test_data
-   # 批量重命名
-   cmd-file-toolkit rename --dir ./test --prefix photo_
-   # 批量生成md5校验清单
-   cmd-file-toolkit md5 --dir ./data -o checksum.txt
-   ```
-
-### 测试编译开关
-CMake 参数 `-DBUILD_TESTS=ON/OFF`，正式打包发布时关闭单元测试目标。
-
----
-
-## 六、程序命令行接口设计（预览）
-```
-cmd-file-toolkit [COMMAND] [OPTIONS]
-
-Commands:
-  rename      批量重命名文件
-  dup         扫描目录查找重复文件
-  md5         计算文件MD5校验和
-  convert     文件格式批量处理
-
-通用参数：
-  --dir       指定目标目录
-  --log       指定日志输出文件
-  --recursive 递归扫描子目录
-  --ext       文件后缀过滤，例如 .txt,.jpg
-```
-
-示例
-```bash
-# 递归查找 ./images 下所有jpg重复文件
-cmd-file-toolkit dup --dir ./images --recursive --ext .jpg
-
-# 批量重命名：prefix_001.jpg prefix_002.jpg
-cmd-file-toolkit rename --dir ./images --prefix pic_ --start 1 --padding 3
-```
-
 ---
 
 ## 七、部署与输出产物
@@ -267,20 +202,12 @@ Release编译产出：
 ```bash
 # 1. clone/初始化项目目录
 # 2. 创建build目录进行外部构建
-cmake -S . -B build/debug -DCMAKE_BUILD_TYPE=Debug -DBUILD_TESTS=ON
+cmake -S . -B build/dev-debug
 # 3. 编译
-cmake --build build/debug
+cmake --build build/dev-debug
 # 4. 运行程序
-./build/debug/cmd-file-toolkit --help
+./build/dev-debug/cmd-file-toolkit --help
 # 5. 运行单元测试
 ./build/debug/unit_test
 ```
 
----
-
-如果你需要，我接下来可以依次输出：
-1. 根目录 `CMakeLists.txt` + `cmake/` 下各个模块cmake脚本
-2. `.clang-format`、`.gitignore`、`CMakePresets.json`
-3. 基础头文件模板（error_code.h、logger、string_util）
-
-你优先想要哪一部分代码？

@@ -36,7 +36,7 @@ option(ENABLE_ASAN "Enable AddressSanitizer" OFF)
 file(GLOB_RECURSE SRC_SOURCES
         src/main.cpp
         src/common/*.cpp
-        src/cli/*.cpp
+        src/ui/*.cpp
         src/fs/*.cpp
         src/logger/*.cpp
         src/md5/*.cpp
@@ -46,11 +46,11 @@ file(GLOB_RECURSE SRC_SOURCES
 # 收集文件头
 file(GLOB_RECURSE SRC_HEADERS
         src/common/*.h
-        src/cli/*.h
+        src/ui/*.h
         src/fs/*.h
         src/logger/*.h
         src/md5/*.h
-        src/task/*.h       
+        src/task/*.h
 )
 
 # ============================================================

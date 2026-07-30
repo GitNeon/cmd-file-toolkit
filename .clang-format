@@ -1,0 +1,75 @@
+# ==============================================
+# 企业业务C++通用 clang-format 配置
+# 适用：服务端、业务SDK、后台业务程序（非嵌入式）
+# BasedOnStyle 基底：Google
+# 检查cmake语法是否正确：clang-format -dump-config
+# 找到自己对应版本文档
+# chttps://releases.llvm.org/22.1.0/tools/clang/docs/ClangFormatStyleOptions.html
+# ==============================================
+BasedOnStyle: Google
+Language: Cpp
+# 字符编码
+SortUsingDeclarations: true
+
+# ---------------- 缩进与空白 ----------------
+IndentWidth: 4
+TabWidth: 4
+UseTab: Never
+ContinuationIndentWidth: 4
+AccessModifierOffset: -4
+
+# ---------------- 换行控制 ----------------
+ColumnLimit: 120
+MaxEmptyLinesToKeep: 2
+KeepEmptyLinesAtTheStartOfBlocks: false
+
+# ---------------- 大括号风格 核心选项 ----------------
+BreakBeforeBraces: Allman
+# Allman：大括号单独起一行（业务项目推荐，可读性强）
+# Attach：大括号跟在同行，不推荐业务代码
+
+# ---------------- 指针、引用位置 ----------------
+PointerAlignment: Left
+# int* data;  而非 int *data;
+
+# ---------------- 单行语句控制（安全优先，禁止紧凑单行） ----------------
+AllowShortBlocksOnASingleLine: Never
+AllowShortFunctionsOnASingleLine: Empty
+AllowShortIfStatementsOnASingleLine: Never
+AllowShortLoopsOnASingleLine: false
+AllowShortCaseLabelsOnASingleLine: false
+
+# ---------------- 对齐美化 ----------------
+AlignConsecutiveAssignments: Consecutive
+AlignConsecutiveDeclarations: Consecutive
+AlignTrailingComments: Always
+AlignOperands: true
+AlignAfterOpenBracket: Align
+
+# ---------------- 命名空间 ----------------
+NamespaceIndentation: All
+FixNamespaceComments: true
+
+# ---------------- 头文件处理 ----------------
+SortIncludes: true
+IncludeBlocks: Preserve
+IncludeIsMainRegex: "(Test)?$"
+# 自动区分系统头文件 <> 和项目头文件 "" 分组排序
+
+# ---------------- 模板、泛型、lambda ----------------
+BreakTemplateDeclarations: Yes
+LambdaBodyIndentation: Signature
+
+# ---------------- 函数参数、调用格式化 ----------------
+AllowAllParametersOfDeclarationOnNextLine: false
+BinPackArguments: false
+BinPackParameters: false
+# 参数不要强行挤压到同一行，超过宽度自动换行
+
+# ---------------- 预处理宏与注释 ----------------
+ReflowComments: true
+SpaceAfterCStyleCast: false
+SpaceBeforeCpp11BracedList: true
+
+# ---------------- 换行符兼容 ----------------
+DeriveLineEnding: true
