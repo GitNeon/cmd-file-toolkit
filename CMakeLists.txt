@@ -17,6 +17,9 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # 禁止使用编译器私有的、非标准的语言特性，确保可移植性
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+# clangd使用
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 # 引入通用编译选项
 include(${PROJECT_SOURCE_DIR}/cmake/CompilerOptions.cmake)
 # 静态分析（可选，按需开启）
@@ -53,6 +56,9 @@ file(GLOB_RECURSE SRC_HEADERS
         src/task/*.h
 )
 
+list(LENGTH SRC_SOURCES SRC_COUNT)
+list(LENGTH SRC_HEADERS HDR_COUNT)
+
 # ============================================================
 # 构建信息输出
 # ============================================================
@@ -75,8 +81,6 @@ message(STATUS "---------- Options ----------")
 message(STATUS "BUILD_TESTS  : ${BUILD_TESTS}")
 message(STATUS "ENABLE_ASAN  : ${ENABLE_ASAN}")
 
-list(LENGTH SRC_SOURCES SRC_COUNT)
-list(LENGTH SRC_HEADERS HDR_COUNT)
 message(STATUS "---------- Sources ----------")
 message(STATUS "Source files : ${SRC_COUNT}")
 message(STATUS "Header files : ${HDR_COUNT}")

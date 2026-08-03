@@ -1,0 +1,178 @@
+# =============================================================================
+#  cmd-file-toolkit - 企业级 clang-tidy 静态分析配置
+#  目标标准: C++17 / 跨平台 / 高警告等级对应
+# =============================================================================
+#
+#  使用方式:
+#    cmake --build build/dev-debug --target clang-tidy
+#    或手动: clang-tidy -p build/dev-debug src/**/*.cpp
+#
+#  检查分类:
+#    1. bugprone-*       —— 常见 Bug 模式检测
+#    2. cert-*           —— CERT 安全编码标准
+#    3. clang-analyzer-* —— Clang 静态分析器深度检查
+#    4. cppcoreguidelines-* —— C++ Core Guidelines 最佳实践
+#    5. modernize-*      —— 现代化 C++ 建议
+#    6. performance-*    —— 性能优化建议
+#    7. portability-*    —— 跨平台可移植性
+#    8. readability-*    —— 可读性与命名规范
+#    9. concurrency-*    —— 并发安全
+#   10. misc-*           —— 其他杂项检查
+# =============================================================================
+
+# ----- 全局配置 --------------------------------------------------------------
+Checks: >
+  -*,
+  bugprone-*,
+  -bugprone-easily-swappable-parameters,
+  -bugprone-narrowing-conversions,
+  cert-*,
+  -cert-err58-cpp,
+  -cert-msc32-c,
+  -cert-msc51-cpp,
+  clang-analyzer-*,
+  cppcoreguidelines-*,
+  -cppcoreguidelines-avoid-magic-numbers,
+  -cppcoreguidelines-avoid-non-const-global-variables,
+  -cppcoreguidelines-owning-memory,
+  -cppcoreguidelines-pro-type-vararg,
+  -cppcoreguidelines-pro-bounds-array-to-pointer-decay,
+  concurrency-*,
+  google-*,
+  -google-readability-todo,
+  -google-build-using-namespace,
+  hicpp-*,
+  -hicpp-avoid-c-arrays,
+  -hicpp-signed-bitwise,
+  misc-*,
+  -misc-include-cleaner,
+  -misc-non-private-member-variables-in-classes,
+  -misc-no-recursion,
+  -misc-const-correctness,
+  modernize-*,
+  -modernize-use-trailing-return-type,
+  -modernize-avoid-c-arrays,
+  performance-*,
+  portability-*,
+  readability-*,
+  -readability-identifier-length,
+  -readability-magic-numbers,
+  -readability-function-cognitive-complexity,
+  -readability-redundant-access-specifiers,
+  -readability-avoid-unconditional-preprocessor-if,
+
+# 仅分析 src/ 目录下的头文件，排除 thirdparty/
+HeaderFilterRegex: '.*/src/.*\.(h|hpp)$'
+
+# 不分析系统头文件 (显著提升速度)
+SystemHeaders: false
+
+# 警告视为错误的关键检查
+WarningsAsErrors: >
+  bugprone-*,
+  cert-*,
+  clang-analyzer-*,
+  cppcoreguidelines-pro-type-*,
+  cppcoreguidelines-slicing,
+  concurrency-*,
+  misc-misplaced-const,
+  misc-new-delete-overloads,
+  misc-non-copyable-objects,
+  misc-throw-by-value-catch-by-reference,
+  misc-uniqueptr-reset-release,
+  misc-use-after-move,
+  performance-*,
+  readability-container-contains,
+  readability-delete-null-pointer,
+  readability-misleading-indentation,
+  readability-redundant-smartptr-get,
+  readability-simplify-boolean-expr,
+
+# ----- 检查选项微调 ------------------------------------------------------------
+
+CheckOptions:
+
+  # --- 命名规范 (与项目编码规范对齐) -------------------------------------------
+  # 类/结构体: PascalCase
+  - key: readability-identifier-naming.ClassCase
+    value: CamelCase
+  - key: readability-identifier-naming.StructCase
+    value: CamelCase
+  # 枚举类型: PascalCase
+  - key: readability-identifier-naming.EnumCase
+    value: CamelCase
+  # 枚举值: UPPER_CASE
+  - key: readability-identifier-naming.EnumConstantCase
+    value: UPPER_CASE
+  # 函数/方法: camelCase
+  - key: readability-identifier-naming.FunctionCase
+    value: camelCase
+  - key: readability-identifier-naming.MethodCase
+    value: camelCase
+  # 变量/参数: camelCase
+  - key: readability-identifier-naming.VariableCase
+    value: camelCase
+  - key: readability-identifier-naming.ParameterCase
+    value: camelCase
+  # 常量/全局常量: UPPER_CASE
+  - key: readability-identifier-naming.ConstantCase
+    value: UPPER_CASE
+  - key: readability-identifier-naming.GlobalConstantCase
+    value: UPPER_CASE
+  # 命名空间: lower_case
+  - key: readability-identifier-naming.NamespaceCase
+    value: lower_case
+  # 类型别名 (using/template): PascalCase
+  - key: readability-identifier-naming.TypeAliasCase
+    value: CamelCase
+  - key: readability-identifier-naming.TemplateParameterCase
+    value: CamelCase
+  # 宏定义: UPPER_CASE
+  - key: readability-identifier-naming.MacroDefinitionCase
+    value: UPPER_CASE
+  # 成员变量不强制前缀 (项目不使用 m_ 前缀)
+  - key: readability-identifier-naming.PrivateMemberPrefix
+    value: ''
+  - key: readability-identifier-naming.ProtectedMemberPrefix
+    value: ''
+  - key: readability-identifier-naming.PublicMemberPrefix
+    value: ''
+
+  # --- modernize 微调 ---------------------------------------------------------
+  # use-auto: 当类型已明确写在初始化表达式中时建议 auto
+  - key: modernize-use-auto.MinTypeNameLength
+    value: '5'
+  # use-nullptr: nullptr 替代 NULL/0
+  - key: modernize-use-nullptr.NullptrMacros
+    value: 'NULL'
+
+  # --- bugprone 微调 ----------------------------------------------------------
+  # 函数参数阈值: 允许最多 4 个参数，超过报警
+  - key: bugprone-easily-swappable-parameters.MinimumLength
+    value: '3'
+  # 分支过多复杂度告警阈值
+  - key: bugprone-branch-clone.MinimumSwitchCases
+    value: '3'
+
+  # --- performance 微调 -------------------------------------------------------
+  # 按值传递的类型大小阈值 (字节)，超过此值建议 const& 传递
+  - key: performance-unnecessary-value-param.AllowedTypes
+    value: 'std::string;std::filesystem::path;std::wstring'
+
+  # --- readability 微调 -------------------------------------------------------
+  # 标识符最小长度 (暂时放宽)
+  - key: readability-identifier-length.MinimumVariableNameLength
+    value: '2'
+  - key: readability-identifier-length.MinimumParameterNameLength
+    value: '1'
+  # 函数认知复杂度阈值
+  - key: readability-function-cognitive-complexity.Threshold
+    value: '30'
+  # 忽略宏中的 else-after-return
+  - key: readability-else-after-return.IgnoreMacros
+    value: 'true'
+
+  # --- misc 微调 --------------------------------------------------------------
+  # 允许特定全局 using (如 std::filesystem::path)
+  - key: misc-no-recursion.MaxAllowedRecursionDepth
+    value: '1'

@@ -9,10 +9,12 @@
         {
             "name": "base-defaults",
             "hidden": true,
-            "generator": "MinGW Makefiles",
+            "generator": "Ninja",
             "binaryDir": "${sourceDir}/build/${presetName}",
             "installDir": "${sourceDir}/out/${presetName}",
             "cacheVariables": {
+                "CMAKE_C_COMPILER": "clang-cl.exe",
+                "CMAKE_CXX_COMPILER": "clang-cl.exe",
                 "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
                 "BUILD_DOCS": "OFF",
                 "BUILD_EXAMPLES": "OFF"

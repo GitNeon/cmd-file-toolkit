@@ -199,15 +199,69 @@ Release编译产出：
 6. 增加交互式模式
 
 ## 九、快速上手步骤
+
+本项目通过 `CMakePresets.json` 提供三套预设配置，覆盖开发、发布与 CI 场景。
+
+### 通用前置步骤
+
 ```bash
-# 1. clone/初始化项目目录
-# 2. 创建build目录进行外部构建
-cmake -S . -B build/dev-debug
-# 3. 编译
-cmake --build build/dev-debug
+# 1. 克隆并进入项目目录
+git clone <repo-url> && cd cmd-file-toolkit
+```
+
+### 预设一：开发调试（dev-debug）
+
+> Debug 构建，启用地址消毒器(ASAN)、未定义行为消毒器(USAN) 和单元测试。
+
+```bash
+# 2. 配置（使用 dev-debug 预设）
+cmake --preset dev-debug
+
+# 3. 编译（使用 dev-build 预设，4 并行任务）
+cmake --build --preset dev-build
+
 # 4. 运行程序
 ./build/dev-debug/cmd-file-toolkit --help
-# 5. 运行单元测试
-./build/debug/unit_test
+
+# 5. 运行单元测试（使用 dev-test 预设）
+ctest --preset dev-test
 ```
+
+### 预设二：生产发布（prod-release）
+
+> Release 构建，`-O2 -DNDEBUG` 优化，关闭测试和消毒器。
+
+```bash
+# 2. 配置（使用 prod-release 预设）
+cmake --preset prod-release
+
+# 3. 编译（使用 prod-build 预设，4 并行任务）
+cmake --build --preset prod-build
+
+# 4. 运行程序
+./build/prod-release/cmd-file-toolkit --help
+```
+
+### 预设三：CI 静态分析（ci-analysis）
+
+> 继承 prod-release，额外开启单元测试和 cppcheck 静态检查。
+
+```bash
+# 2. 配置（使用 ci-analysis 预设）
+cmake --preset ci-analysis
+
+# 3. 编译
+cmake --build build/ci-analysis
+
+# 4. 运行单元测试
+ctest --test-dir build/ci-analysis
+```
+
+### 构建产物速查
+
+| 预设 | 构建目录 | 可执行文件路径 |
+|------|----------|----------------|
+| dev-debug | `build/dev-debug/` | `./build/dev-debug/cmd-file-toolkit` |
+| prod-release | `build/prod-release/` | `./build/prod-release/cmd-file-toolkit` |
+| ci-analysis | `build/ci-analysis/` | `./build/ci-analysis/cmd-file-toolkit` |
 
