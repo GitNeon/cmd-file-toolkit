@@ -4,11 +4,12 @@
 > 练习目标：文件系统、字符串处理、STL容器、异常/错误处理、跨平台工程化、CMake构建、规范化编码
 
 ## 项目简介
-**cmd-file-toolkit** 是一款基于 C++17 开发的跨平台命令行文件批量处理工具箱。
-实现文件批量重命名、格式筛选转换、重复文件检测、MD5哈希校验、操作日志输出等功能。
+
+**cmd-file-toolkit** 是一款基于 C++17 开发的跨平台命令行文件批量处理工具箱。 实现文件批量重命名、格式筛选转换、重复文件检测、MD5哈希校验、操作日志输出等功能。
 项目面向 C++ 工程化实战练习，遵循现代C++规范，完整落地 CMake 构建、单元测试、静态代码检查、目录规范、异常安全、跨平台文件操作。
 
 ### 核心功能清单
+
 1. **批量重命名**：前缀/后缀替换、序号自增重命名、正则匹配文件名替换
 2. **文件筛选与格式转换**：按后缀过滤文件，支持简单文本编码转换占位扩展
 3. **重复文件查找**：基于MD5哈希识别内容完全一致的重复文件
@@ -17,6 +18,7 @@
 6. **通用基础能力**：递归目录遍历、路径解析、命令行参数解析、统一异常处理
 
 ### 技术训练重点
+
 - C++17 `std::filesystem` 跨平台目录、文件操作
 - STL：`std::vector` / `std::unordered_map` / `std::string_view` / 容器算法
 - 字符串处理、正则表达式 `std::regex`
@@ -29,7 +31,9 @@
 ---
 
 ## 一、技术选型
+
 ### 基础标准
+
 - **C++ 标准：C++17**
 - 构建工具：CMake ≥ 3.18
 - 编译器：
@@ -38,7 +42,9 @@
     - macOS: Clang 12+
 
 ### 依赖
+
 #### 内置标准库（无第三方编译依赖）
+
 1. `<filesystem>` 文件系统
 2. `<fstream>` 文件读写
 3. `<string> <string_view>` 字符串
@@ -48,18 +54,22 @@
 7. `<stdexcept>` 标准异常
 
 #### 内置第三方源码依赖（header-only，放入 `thirdparty/`）
+
 > 不引入重型库，便于练习编译与源码集成
+
 1. md5 哈希实现（单头文件 MD5 实现）
 2. [cxxopts](https://github.com/jarro2783/cxxopts)：命令行参数解析（header-only）
 
-> 原则：尽量减少动态库依赖，最终产物为**静态链接可执行文件**，开箱即用。
+> 原则：尽量减少动态库依赖，最终产物为 **静态链接可执行文件**，开箱即用。
 
 ### 禁止引入
+
 - Boost、Qt、OpenCV等大型框架；专注标准C++基础能力训练
 
 ---
 
 ## 二、项目目录结构（企业规范）
+
 ```
 cmd-file-toolkit/
 ├── .github/                # CI配置（可选拓展，持续集成）
@@ -110,6 +120,7 @@ cmd-file-toolkit/
 ```
 
 ### 分层设计原则
+
 1. **common**：底层工具函数，无业务依赖
 2. **fs / logger / md5**：基础能力模块（基础设施层）
 3. **task**：业务任务逻辑（应用层）
@@ -121,12 +132,15 @@ cmd-file-toolkit/
 ---
 
 ## 三、构建系统：CMake 方案
+
 ### 构建模式
+
 - 支持 **Out-of-source 外部构建**，所有产物统一放在 `build/`，源码目录保持干净
 - 区分 `Debug / Release` 编译模式
 - 支持：启用警告、地址消毒（ASAN）、静态分析开关
 
 ### CMake 主要能力规划
+
 1. 设置 C++17 标准，禁止编译器扩展
 2. 统一编译警告（高严格级别）
     - MSVC: `/W4`
@@ -142,7 +156,9 @@ cmd-file-toolkit/
 ---
 
 ## 四、代码规范 & 静态检查
+
 ### 编码规范
+
 1. 使用 `.clang-format` 统一格式化代码
     - 缩进：4空格
     - 命名规范：
@@ -160,12 +176,14 @@ cmd-file-toolkit/
     - 文件操作保证RAII，自动关闭流
 
 ### 静态代码分析
+
 启用两套检查：
+
 1. **clang-tidy**：现代C++最佳实践检测（`.clang-tidy` 配置）
-2. **cppcheck**：可选脚本一键扫描
-   禁止提交存在严重警告、内存风险代码。
+2. **cppcheck**：可选脚本一键扫描 禁止提交存在严重警告、内存风险代码。
 
 ### Git 提交规范
+
 ```
 feat: 新增批量重命名任务
 fix: 修复中文路径std::filesystem windows兼容问题
@@ -180,17 +198,20 @@ docs: 更新README工程结构
 ---
 
 ## 七、部署与输出产物
+
 Release编译产出：
+
 - Windows：`cmd-file-toolkit.exe`
 - Linux/macOS：`cmd-file-toolkit`
 
-产物为**单一可执行程序**，无需额外动态库，可直接复制使用。
-支持输出日志文件、md5校验清单文本，方便CI/脚本二次调用。
+产物为 **单一可执行程序**，无需额外动态库，可直接复制使用。 支持输出日志文件、md5校验清单文本，方便CI/脚本二次调用。
 
 ---
 
 ## 八、拓展路线（后续迭代方向）
+
 > 基础版本完成后可选拓展练习
+
 1. 支持异步并发扫描目录（std::thread / std::async）
 2. 支持大文件分段MD5，优化超大文件性能
 3. 增加文件删除、移动、复制批量操作
@@ -211,7 +232,7 @@ git clone <repo-url> && cd cmd-file-toolkit
 
 ### 预设一：开发调试（dev-debug）
 
-> Debug 构建，启用地址消毒器(ASAN)、未定义行为消毒器(USAN) 和单元测试。
+> Debug 构建，启用地址消毒器 (ASAN)、未定义行为消毒器 (USAN) 和单元测试。
 
 ```bash
 # 2. 配置（使用 dev-debug 预设）
@@ -259,9 +280,9 @@ ctest --test-dir build/ci-analysis
 
 ### 构建产物速查
 
-| 预设 | 构建目录 | 可执行文件路径 |
-|------|----------|----------------|
-| dev-debug | `build/dev-debug/` | `./build/dev-debug/cmd-file-toolkit` |
+| 预设         | 构建目录              | 可执行文件路径                          |
+|--------------|-----------------------|-----------------------------------------|
+| dev-debug    | `build/dev-debug/`    | `./build/dev-debug/cmd-file-toolkit`    |
 | prod-release | `build/prod-release/` | `./build/prod-release/cmd-file-toolkit` |
-| ci-analysis | `build/ci-analysis/` | `./build/ci-analysis/cmd-file-toolkit` |
+| ci-analysis  | `build/ci-analysis/`  | `./build/ci-analysis/cmd-file-toolkit`  |
 
