@@ -95,15 +95,15 @@ int main() {
         std::getline(std::cin, md5_filePath);
 
         // 调用 QuickDigest5 计算文件的 MD5 哈希值
-        const std::string hashResult = my_md5::ComputeFileHash(md5_filePath);
+        const std::string HASH_RESULT = my_md5::ComputeFileHash(md5_filePath);
 
-        if (hashResult.empty()) {
+        if (HASH_RESULT.empty()) {
           std::cout << "MD5 校验失败，请检查文件路径是否正确。\n";
           logger::Error("MD5 校验失败 - " + md5_filePath);
         } else {
-          std::cout << "文件 MD5 值（32位小写十六进制）：" << hashResult
+          std::cout << "文件 MD5 值（32位小写十六进制）：" << HASH_RESULT
                     << "\n";
-          logger::Info("MD5 校验成功 - " + md5_filePath + " -> " + hashResult);
+          logger::Info("MD5 校验成功 - " + md5_filePath + " -> " + HASH_RESULT);
         }
         break;
       }
