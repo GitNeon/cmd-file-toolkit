@@ -1,4 +1,5 @@
 #include <windows.h>
+#include <cctype>
 #include <iostream>
 #include <string>
 
@@ -14,6 +15,12 @@ namespace
         SetConsoleOutputCP(CP_UTF8);
         SetConsoleCP(CP_UTF8);  // 控制台输入编码
     }
+
+    // 简短操作提示：不刷完整菜单，减少屏幕滚动
+    void ShowShortPrompt()
+    {
+        std::cout << "\n请输入功能编号（M=查看菜单, 0=退出）：";
+    }
 }  // namespace
 
 int main()
@@ -23,14 +30,51 @@ int main()
     // 初始化日志：输出 DEBUG 及以上级别，同时写入日志文件
     logger::Init(logger::Level::LG_DEBUG, "toolkit.log");
 
+    // 首次启动显示完整菜单
     ui::ShowMainMenu();
+    ShowShortPrompt();
 
-    int select = -1;
+    std::string input;
     while (true)
     {
-        std::cin >> select;
+        std::getline(std::cin, input);
 
-        std::cout << "\n" << "选择的功能序号：" << select << " \n";
+        // 空输入跳过
+        if (input.empty())
+        {
+            ShowShortPrompt();
+            continue;
+        }
+
+        // 按 M 键显示完整菜单
+        if (input.size() == 1 && std::toupper(input[0]) == 'M')
+        {
+            ui::ShowMainMenu();
+            ShowShortPrompt();
+            continue;
+        }
+
+        // 尝试解析为整数
+        int select = -1;
+        try
+        {
+            std::size_t pos = 0;
+            select          = std::stoi(input, &pos);
+            // 输入必须是纯数字，不允许 "1abc" 这种部分解析
+            if (pos != input.size())
+            {
+                throw std::invalid_argument("非纯数字输入");
+            }
+        }
+        catch (...)
+        {
+            std::cout << "输入无效，请重新输入！\n";
+            ShowShortPrompt();
+            continue;
+        }
+
+        std::cout << "\n"
+                  << "选择的功能序号：" << select << " \n";
 
         switch (select)
         {
@@ -39,7 +83,6 @@ int main()
                 return 0;
             case 1:
             {
-                std::cin.ignore();  // 丢弃上次输入残留的换行符
                 std::cout << "请输入原文件完整路径：";
                 std::string oldPath;
                 std::getline(std::cin, oldPath);
@@ -52,25 +95,18 @@ int main()
                 break;
             }
             case 2:
-                /* code */
-                break;
             case 3:
-                /* code */
-                break;
             case 4:
-                /* code */
-                break;
             case 5:
-                /* code */
-                break;
             case 6:
-                /* code */
+                std::cout << "该功能尚未实现，敬请期待。\n";
                 break;
             default:
-                std::cout << "选择的功能序号不存在，请重新输入！" << "\n";
-                continue;
+                std::cout << "选择的功能序号不存在，请重新输入！\n";
+                break;
         }
 
-        ui::ShowMainMenu();
+        // 功能执行完毕，显示简短提示，等待下一次输入
+        ShowShortPrompt();
     }
 }
