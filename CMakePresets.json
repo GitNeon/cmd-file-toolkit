@@ -1,87 +1,103 @@
 {
-    "version": 6,
-    "cmakeMinimumRequired": {
-        "major": 3,
-        "minor": 18,
-        "patch": 0
+  "version": 6,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 24,
+    "patch": 0
+  },
+  "configurePresets": [
+    {
+      "name": "base-ninja",
+      "description": "底层：通用基础配置（所有平台/编译器共用）",
+      "hidden": true,
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/${presetName}",
+      "installDir": "${sourceDir}/out/${presetName}",
+      "cacheVariables": {
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
+      },
+      "vendor": {
+        "jetbrains.com/clion": {
+          "toolchain": "Visual Studio"
+        }
+      }
     },
-    "configurePresets": [
-        {
-            "name": "base-defaults",
-            "hidden": true,
-            "generator": "Ninja",
-            "binaryDir": "${sourceDir}/build/${presetName}",
-            "installDir": "${sourceDir}/out/${presetName}",
-            "cacheVariables": {
-                "CMAKE_C_COMPILER": "clang-cl.exe",
-                "CMAKE_CXX_COMPILER": "clang-cl.exe",
-                "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
-                "BUILD_DOCS": "OFF",
-                "BUILD_EXAMPLES": "OFF"
-            }
-        },
-        {
-            "name": "dev-debug",
-            "displayName": "Development Debug",
-            "description": "Debug build with tests and sanitizers enabled",
-            "inherits": "base-defaults",
-            "cacheVariables": {
-                "CMAKE_BUILD_TYPE": "Debug",
-                "BUILD_TESTS": "ON",
-                "ENABLE_ASAN": "ON",
-                "ENABLE_USAN": "ON"
-            }
-        },
-        {
-            "name": "prod-release",
-            "displayName": "Production Release",
-            "description": "Optimized release build for deployment",
-            "inherits": "base-defaults",
-            "cacheVariables": {
-                "CMAKE_BUILD_TYPE": "Release",
-                "BUILD_TESTS": "OFF",
-                "ENABLE_ASAN": "OFF",
-                "ENABLE_USAN": "OFF",
-                "CMAKE_CXX_FLAGS_RELEASE": "-O2 -DNDEBUG"
-            }
-        },
-        {
-            "name": "ci-analysis",
-            "displayName": "CI Static Analysis",
-            "description": "Build for CI pipeline with strict checks",
-            "inherits": "prod-release",
-            "cacheVariables": {
-                "BUILD_TESTS": "ON",
-                "ENABLE_CPPCHECK": "ON"
-            }
-        }
-    ],
-    "buildPresets": [
-        {
-            "name": "dev-build",
-            "displayName": "Build Debug",
-            "configurePreset": "dev-debug",
-            "jobs": 4
-        },
-        {
-            "name": "prod-build",
-            "displayName": "Build Release",
-            "configurePreset": "prod-release",
-            "jobs": 4
-        }
-    ],
-    "testPresets": [
-        {
-            "name": "dev-test",
-            "displayName": "Run Tests",
-            "configurePreset": "dev-debug",
-            "output": {
-                "outputOnFailure": true
-            },
-            "execution": {
-                "noTestsAction": "error",
-                "stopOnFailure": true
-            }
-        }
-    ]
+    {
+      "name": "base-win-msvc",
+      "description": "中间层：Windows MSVC 编译器基础配置",
+      "hidden": true,
+      "inherits": "base-ninja",
+      "cacheVariables": {
+        "CMAKE_CXX_COMPILER": "cl.exe",
+        "CMAKE_CXX_FLAGS_INIT": "/utf-8 /W4 /permissive- /MP"
+      }
+    },
+    {
+      "name": "base-win-clangcl",
+      "description": "中间层：Windows clang-cl 编译器基础配置",
+      "hidden": true,
+      "inherits": "base-ninja",
+      "cacheVariables": {
+        "CMAKE_CXX_COMPILER": "clang-cl.exe",
+        "CMAKE_CXX_FLAGS_INIT": "/utf-8 /W4 /permissive- /MP"
+      }
+    },
+    {
+      "name": "dev-debug",
+      "displayName": "Development Debug (clang-cl)",
+      "description": "开发调试：clang-cl + Debug + ASAN + 测试",
+      "inherits": "base-win-clangcl",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "BUILD_TESTS": "ON",
+        "ENABLE_ASAN": "ON"
+      }
+    },
+    {
+      "name": "prod-release",
+      "displayName": "Production Release (MSVC)",
+      "description": "正式生产发布：MSVC + Release",
+      "inherits": "base-win-msvc",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "BUILD_TESTS": "OFF",
+        "ENABLE_ASAN": "OFF"
+      }
+    },
+    {
+      "name": "ci-analysis",
+      "displayName": "CI Static Analysis (clang-cl)",
+      "description": "CI 静态分析：clang-cl + 严格检查",
+      "inherits": "dev-debug",
+      "cacheVariables": {
+        "ENABLE_CPPCHECK": "ON"
+      }
+    }
+  ],
+  "testPresets": [
+    {
+      "name": "dev-test",
+      "displayName": "Run Tests",
+      "configurePreset": "dev-debug",
+      "output": {
+        "outputOnFailure": true
+      },
+      "execution": {
+        "noTestsAction": "error",
+        "stopOnFailure": true
+      }
+    },
+    {
+      "name": "ci-test",
+      "displayName": "CI Run Tests",
+      "configurePreset": "ci-analysis",
+      "output": {
+        "outputOnFailure": true
+      },
+      "execution": {
+        "noTestsAction": "error",
+        "stopOnFailure": true
+      }
+    }
+  ]
 }
